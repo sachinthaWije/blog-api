@@ -131,4 +131,22 @@ public class PostServiceImpl implements PostService {
 
         postRepository.delete(post);
     }
+
+    @Override
+    public Page<PostDTO> searchAndFilterPosts(String title, POST_STATUS status,Pageable pageable) {
+        Page<Post> posts;
+
+        if (title != null && status != null) {
+            posts = postRepository.findByTitleContainingIgnoreCaseAndPostStatus(title, status, pageable);
+        } else if (title != null) {
+            posts = postRepository.findByTitleContainingIgnoreCase(title, pageable);
+        } else if (status != null) {
+            posts = postRepository.findByPostStatus(status, pageable);
+        } else {
+            posts = postRepository.findAll(pageable);
+        }
+
+        return posts.map(post -> modelMapper.map(post, PostDTO.class));
+
+    }
 }

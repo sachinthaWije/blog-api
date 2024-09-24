@@ -12,9 +12,12 @@ import java.util.Optional;
 
 public interface PostRepository extends MongoRepository<Post,String> {
 
-    PostDTO save(PostDTO postDTO);
     List<PostDTO> findAllByUserId(String userId);
     boolean existsByTitleAndUserId(String title, String userId);
     Page<PostDTO> findAllByPostStatus(POST_STATUS status, Pageable pageable);
+    Page<Post> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    Page<Post> findByPostStatus(POST_STATUS status, Pageable pageable);
+    Page<Post> findByTitleContainingIgnoreCaseAndPostStatus(String title, POST_STATUS status, Pageable pageable);
+
 
 }

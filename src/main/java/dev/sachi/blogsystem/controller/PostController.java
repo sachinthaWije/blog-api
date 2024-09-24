@@ -2,10 +2,14 @@ package dev.sachi.blogsystem.controller;
 
 import dev.sachi.blogsystem.dto.PostDTO;
 import dev.sachi.blogsystem.dto.UserDTO;
+import dev.sachi.blogsystem.model.POST_STATUS;
 import dev.sachi.blogsystem.service.PostService;
 import dev.sachi.blogsystem.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,4 +74,16 @@ public class PostController {
         postService.deletePost(postId, loggedUser.getId());
         return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public Page<PostDTO> searchAndFilterPosts(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) POST_STATUS status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return postService.searchAndFilterPosts(title, status, pageable);
+    }
+
 }
